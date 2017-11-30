@@ -1,0 +1,63 @@
+<!-- 
+This is the index HTML web page which you actually see on the browser when you run this application
+Author: Piyush Bajaj
+Topic: UI Assignment 4 <!DOCTYPE html>
+-->
+<html>
+  <title>HALO - Connecting People</title>
+  <head>
+      <link rel="stylesheet" type="text/css" href="styling_data.css"> 
+      <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+      <script src="main.js"></script>
+      <script async defer
+      src="https://maps.googleapis.com/maps/api/js?libraries=geometry,drawing,visualization&key=AIzaSyDOc-SesmjPJ9uJdb77bUc0E5O4DY6EdAs&v=3&callback=initMap">
+     </script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="options-box">
+          <div class="filter_main_page">
+              <img class="logo" src="C:\Users\piyus\Documents\UI\UI Halo Project\images\logo_white.png">
+            </div>
+        <div class="profile_picture">
+            <img class="profile-pic" src="C:\Users\piyus\Documents\UI\UI Halo Project\images\img_avatar2.png" />
+            <div class="upload-button">Upload</div>        
+            <input class="file-upload" type="file" accept="image/*"/>
+        </div>
+        <div>
+          <input id="show-listings" type="button" value="Show People">
+        <!--  <input id="hide-listings" type="button" value="Hide People"> -->
+          <hr>
+          <span class="text"> Draw shapes to search within it a defined region!</span>
+          <input id="drawing"  type="button" value="Draw" onclick="return change(this);">
+        </div>
+        <hr>
+        <div>
+          <input id="zoom-to-area-text" type="text" placeholder="Las Vegas">
+          <input id="zoom-to-area" type="button" value="Zoom">
+        </div>
+        <hr>
+        <div>
+          <span class="text"> Within </span>
+          <select id="max-duration">
+            <option value="10">10 min</option>
+            <option value="15">15 min</option>
+            <option value="30">30 min</option>
+            <option value="60">1 hour</option>
+          </select>
+          <select id="mode">
+            <option value="DRIVING">drive</option>
+            <option value="WALKING">walk</option>
+            <option value="BICYCLING">bike</option>
+            <option value="TRANSIT">transit ride</option>
+          </select>
+          <span class="text">of</span>
+          <input id="search-within-time-text" type="text" placeholder="Enter the location ">
+          <input id="search-within-time" type="button" value="Go">
+        </div>
+      </div>   
+      <div id="map">       
+      </div>
+    </div>  
+  </body>
+</html>
