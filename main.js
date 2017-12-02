@@ -4,17 +4,39 @@
 
 var map;
 var markers = [];
+var locations = [];
 var draw = null;
 
+function get_locations(){var oReq = new XMLHttpRequest();
+oReq.open("POST", "http://localhost:8888/findall");
+oReq.onreadystatechange = function() {
+    console.log("inside findall",this.status)
+      
+      console.log("we are here")
+      //console.log(this.responseText)
+      locations = JSON.parse(this.responseText);
+      //console.log(locations)
+      initMap();
+    
+ };
+console.log("we called findall")
+oReq.send();
+}
+
+console.log("locations outside initMap");
+console.log(locations); 
+
 function change( temp )
-  {
-    if ( temp.value === "Draw" )
-        temp.value = "Un-Draw";
-    else
-        temp.value = "Draw";
-  }
+{
+  if ( temp.value === "Draw" )
+      temp.value = "Un-Draw";
+  else
+      temp.value = "Draw";
+}
 
 function initMap() {
+  console.log("loactions inside InitMap")
+  console.log(locations)
   var styles = [
     {
       "elementType": "geometry",
@@ -238,8 +260,8 @@ function initMap() {
 
   }
 
-  var locations = [
-    {"business_id": "LDMCrFlGIFUN6L-FEFgzWg", "name": "El Pollo Loco", "neighborhood": "", "address": "2400 E Lake Mead Blvd", "city": "Las Vegas", "state": "NV", "postal_code": "89030", "latitude": 36.1962026, "longitude": -115.1167987, "stars": 3.0, "review_count": 12, "is_open": 1, "attributes": {"RestaurantsTableService": true, "GoodForMeal": {"dessert": false, "latenight": false, "lunch": false, "dinner": false, "breakfast": false, "brunch": false}, "Alcohol": "none", "Caters": true, "HasTV": false, "RestaurantsGoodForGroups": true, "NoiseLevel": "average", "WiFi": "no", "RestaurantsAttire": "casual", "RestaurantsReservations": false, "OutdoorSeating": false, "BusinessAcceptsCreditCards": true, "RestaurantsPriceRange2": 1, "BikeParking": false, "RestaurantsDelivery": false, "Ambience": {"romantic": false, "intimate": false, "classy": false, "hipster": false, "divey": false, "touristy": false, "trendy": false, "upscale": false, "casual": false}, "RestaurantsTakeOut": true, "GoodForKids": true, "DriveThru": true, "BusinessParking": {"garage": false, "street": false, "validated": false, "lot": false, "valet": false}}, "categories": ["Restaurants", "American (Traditional)", "Mexican", "Fast Food"], "hours": {"Monday": "9:00-23:00", "Tuesday": "9:00-23:00", "Friday": "9:00-23:00", "Wednesday": "9:00-23:00", "Thursday": "9:00-23:00", "Sunday": "9:00-23:00", "Saturday": "9:00-23:00"}},
+  /*var locations = [
+    { "address": "2400 E Lake Mead Blvd", "city": "Las Vegas", "state": "NV", "postal_code": "89030", "latitude": 36.1962026, "longitude": -115.1167987, "stars": 3.0, "review_count": 12, "is_open": 1, "attributes": {"RestaurantsTableService": true, "GoodForMeal": {"dessert": false, "latenight": false, "lunch": false, "dinner": false, "breakfast": false, "brunch": false}, "Alcohol": "none", "Caters": true, "HasTV": false, "RestaurantsGoodForGroups": true, "NoiseLevel": "average", "WiFi": "no", "RestaurantsAttire": "casual", "RestaurantsReservations": false, "OutdoorSeating": false, "BusinessAcceptsCreditCards": true, "RestaurantsPriceRange2": 1, "BikeParking": false, "RestaurantsDelivery": false, "Ambience": {"romantic": false, "intimate": false, "classy": false, "hipster": false, "divey": false, "touristy": false, "trendy": false, "upscale": false, "casual": false}, "RestaurantsTakeOut": true, "GoodForKids": true, "DriveThru": true, "BusinessParking": {"garage": false, "street": false, "validated": false, "lot": false, "valet": false}}, "categories": ["Restaurants", "American (Traditional)", "Mexican", "Fast Food"], "hours": {"Monday": "9:00-23:00", "Tuesday": "9:00-23:00", "Friday": "9:00-23:00", "Wednesday": "9:00-23:00", "Thursday": "9:00-23:00", "Sunday": "9:00-23:00", "Saturday": "9:00-23:00"}},
     {"business_id": "QTH_XGh4rWYdd0fTW-tUDw", "name": "Baja Fresh Mexican Grill", "neighborhood": "Spring Valley", "address": "4190 S Rainbow Blvd", "city": "Las Vegas", "state": "NV", "postal_code": "89103", "latitude": 36.1125192, "longitude": -115.2426053, "stars": 3.5, "review_count": 7, "is_open": 0, "attributes": {"RestaurantsPriceRange2": 1, "RestaurantsAttire": "casual", "Alcohol": "none", "RestaurantsReservations": false}, "categories": ["Mexican", "Restaurants"], "hours": {}},
     {"business_id": "Oto60yDwk1z72WmfWEYrjg", "name": "Baja Miguel's", "neighborhood": "Southeast", "address": "South Point Hotel & Casino, 9777 S Las Vegas Blvd", "city": "Las Vegas", "state": "NV", "postal_code": "89183", "latitude": 36.0121912, "longitude": -115.1739932, "stars": 3.0, "review_count": 175, "is_open": 1, "attributes": {"RestaurantsTableService": true, "GoodForMeal": {"dessert": false, "latenight": false, "lunch": true, "dinner": true, "breakfast": false, "brunch": false}, "Alcohol": "full_bar", "Caters": false, "HasTV": false, "RestaurantsGoodForGroups": true, "NoiseLevel": "average", "WiFi": "no", "RestaurantsAttire": "casual", "RestaurantsReservations": true, "OutdoorSeating": false, "BusinessAcceptsCreditCards": true, "RestaurantsPriceRange2": 2, "BikeParking": false, "RestaurantsDelivery": false, "Ambience": {"romantic": false, "intimate": false, "classy": false, "hipster": false, "divey": false, "touristy": false, "trendy": false, "upscale": false, "casual": true}, "RestaurantsTakeOut": true, "GoodForKids": true, "WheelchairAccessible": true, "BusinessParking": {"garage": true, "street": false, "validated": false, "lot": false, "valet": false}}, "categories": ["Food", "Restaurants", "Mexican"], "hours": {"Sunday": "11:00-23:00", "Wednesday": "10:00-23:00", "Thursday": "10:00-23:00", "Saturday": "11:00-23:00"}},
     {"business_id": "mUk-0jToBuzk4KaDXp-uew", "name": "Taza Indian Kitchen", "neighborhood": "Southeast", "address": "9530 S Eastern Ave", "city": "Las Vegas", "state": "NV", "postal_code": "89123", "latitude": 36.0165803, "longitude": -115.1187014, "stars": 3.0, "review_count": 17, "is_open": 0, "attributes": {"GoodForMeal": {"dessert": false, "latenight": false, "lunch": true, "dinner": true, "breakfast": false, "brunch": false}, "Alcohol": "beer_and_wine", "RestaurantsGoodForGroups": true, "RestaurantsAttire": "casual", "RestaurantsReservations": true, "OutdoorSeating": false, "BusinessAcceptsCreditCards": true, "RestaurantsPriceRange2": 2, "RestaurantsTableService": true, "RestaurantsDelivery": false, "RestaurantsTakeOut": true, "GoodForKids": true, "WheelchairAccessible": true, "BusinessParking": {"garage": false, "street": false, "validated": false, "lot": true, "valet": false}}, "categories": ["Indian", "Pakistani", "Restaurants"], "hours": {}},
@@ -258,7 +280,10 @@ function initMap() {
     {"business_id": "4hG2j_ibsNblDgqei05U_g", "name": "Social House", "neighborhood": "The Strip", "address": "Crystals Mall City Center, 3720 Las Vegas Blvd S", "city": "Las Vegas", "state": "NV", "postal_code": "89158", "latitude": 36.108713, "longitude": -115.173192, "stars": 4.0, "review_count": 579, "is_open": 0, "attributes": {"Alcohol": "full_bar", "HasTV": false, "NoiseLevel": "average", "RestaurantsAttire": "casual", "BusinessAcceptsCreditCards": true, "Music": {"dj": false, "background_music": true, "no_music": false, "karaoke": false, "live": false, "video": false, "jukebox": false}, "Ambience": {"romantic": false, "intimate": false, "classy": false, "hipster": false, "divey": false, "touristy": false, "trendy": true, "upscale": false, "casual": false}, "RestaurantsGoodForGroups": true, "BYOBCorkage": "no", "Caters": false, "WiFi": "no", "RestaurantsReservations": true, "BYOB": false, "BikeParking": false, "RestaurantsTakeOut": true, "GoodForKids": false, "HappyHour": true, "GoodForDancing": false, "RestaurantsTableService": true, "OutdoorSeating": false, "RestaurantsPriceRange2": 3, "RestaurantsDelivery": false, "BestNights": {"monday": false, "tuesday": false, "friday": true, "wednesday": false, "thursday": true, "sunday": false, "saturday": true}, "GoodForMeal": {"dessert": false, "latenight": false, "lunch": false, "dinner": true, "breakfast": false, "brunch": false}, "BusinessParking": {"garage": true, "street": false, "validated": false, "lot": false, "valet": true}, "CoatCheck": false, "Smoking": "no", "WheelchairAccessible": true, "RestaurantsCounterService": true}, "categories": ["Japanese", "Lounges", "Bars", "Nightlife", "Asian Fusion", "Restaurants"], "hours": {"Monday": "12:00-22:00", "Tuesday": "12:00-22:00", "Friday": "12:00-23:00", "Wednesday": "12:00-22:00", "Thursday": "12:00-22:00", "Sunday": "12:00-22:00", "Saturday": "12:00-23:00"}},
     {"business_id": "_XM07jbQGliVPwnAfyyGUA", "name": "Yafo Kosher Restaurant", "neighborhood": "The Strip", "address": "3049 S Las Vegas Blvd", "city": "Las Vegas", "state": "NV", "postal_code": "89109", "latitude": 36.1314439, "longitude": -115.1648858, "stars": 3.0, "review_count": 4, "is_open": 0, "attributes": {"GoodForMeal": {"dessert": false, "latenight": false, "lunch": false, "dinner": false, "breakfast": false, "brunch": false}, "Alcohol": "none", "Caters": true, "HasTV": true, "RestaurantsGoodForGroups": true, "NoiseLevel": "average", "RestaurantsAttire": "casual", "RestaurantsReservations": true, "OutdoorSeating": false, "BusinessAcceptsCreditCards": true, "RestaurantsPriceRange2": 2, "RestaurantsTableService": true, "RestaurantsDelivery": true, "Ambience": {"romantic": false, "intimate": false, "classy": false, "hipster": false, "divey": false, "touristy": false, "trendy": false, "upscale": false, "casual": false}, "RestaurantsTakeOut": true, "GoodForKids": true, "BusinessParking": {"garage": false, "street": false, "validated": false, "lot": false, "valet": false}}, "categories": ["Kosher", "Restaurants"], "hours": {}},
     {"business_id": "mVIU34pAjLCmRpftGPaH1A", "name": "Dee's Donuts", "neighborhood": "Southwest", "address": "8680 W Warm Springs Rd", "city": "Las Vegas", "state": "NV", "postal_code": "89148", "latitude": 36.055627, "longitude": -115.2804128, "stars": 4.0, "review_count": 32, "is_open": 0, "attributes": {"BusinessAcceptsCreditCards": true, "RestaurantsPriceRange2": 1, "BusinessParking": {"garage": false, "street": false, "validated": false, "lot": true, "valet": false}, "WheelchairAccessible": true}, "categories": ["Donuts", "Food"], "hours": {"Monday": "6:00-14:00", "Tuesday": "6:00-14:00", "Friday": "6:00-19:00", "Wednesday": "6:00-14:00", "Thursday": "6:00-19:00", "Sunday": "6:00-15:00", "Saturday": "6:00-18:00"}},
-  ]; 
+  
+
+]; 
+*/
 
   var largeInfowindow = new google.maps.InfoWindow();
   var drawingManager = new google.maps.drawing.DrawingManager({
@@ -275,24 +300,18 @@ function initMap() {
   var defaultIcon = makeMarkerIcon('0091ff');
 
   var highlightedIcon = makeMarkerIcon('FFFF24');
+  console.log("locations before call")
+  console.log(locations)
 
-  for (var i = 0; i < locations.length; i++) {   // Process Query - MongoDB  OR Fetch Data
-    var position = {lat: locations[i].latitude, lng: locations[i].longitude};
-    var title = locations[i].name;
-    var stars = locations[i].stars;
-    var review = locations[i].review_count;
-    var city = locations[i].city;
+  for (var i = 0; i< locations.length;i++) {   // Process Query - MongoDB  OR Fetch Data
+    //console.log(typeof(locations[i]))
+    //console.log(locations[i].latitude)
+    //console.log(locations[i].longitude)
+    var position = {lat: parseFloat(locations[i].latitude), lng: parseFloat(locations[i].longitude)};
     console.log(position);
-    console.log(title);
     var marker = new google.maps.Marker({
       position: position,
-      title: title,
-      animation: google.maps.Animation.DROP,
-      icon: defaultIcon,
-      rating: stars,
-      review: review,
-      city: city,
-      id: i
+      map: map
     });
     markers.push(marker);
     marker.addListener('click', function() {

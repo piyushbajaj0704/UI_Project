@@ -14,6 +14,26 @@
 </head>
 
 <body>
+    <div class="container_home">
+        
+          <div class="filter">
+            <img class="logo" src="C:\Users\piyus\Documents\UI\UI Halo Project\images\mainlogo.png">
+          </div>
+          <video autoplay loop class="fillWidth">
+              <source src="WEBM/Ground-Zero.webm" type="video/webm" />Your browser does not support the video tag. I suggest you upgrade your browser.
+          </video>
+        
+          <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" +
+            data-show-faces="true" scope="public_profile,email,user_location,user_hometown,user_friends" +
+            onlogin="checkLoginState();" data-auto-logout-link="true" data-use-continue-as="true"></div>
+          <div id="status"></div>
+          <div id="geo-location">
+          </div>
+          <input id="longitude" name="longitude" type="hidden"/>
+          <input id="latitude" name="latitude" type="hidden"/>
+          <input id="user_name" name="u_name" type="hidden"/>
+        </div>
+        
     
 <script>
   function statusChangeCallback(response) {
@@ -63,11 +83,11 @@
     FB.api('/me', function(response) {
       document.getElementById('status').innerHTML =
         'Thanks for logging in, ' + response.name + '' + response.id + '!';
+        console.log('Successful login for: ' + response.name);
+        document.getElementsByName("u_name").value = response.name;
         FB.api('/me/friends', function(response) {
-      console.log(response);
-      console.log('Successful login for: ' + response.name);
-    });
-
+       console.log(response);
+        });
     });
   }
   function fbLogoutUser() {
@@ -82,32 +102,35 @@
 
 </script>
 <!-- For Home Page Container  -->
-<div class="container_home">
-
-  <div class="filter">
-    <img class="logo" src="C:\Users\piyus\Documents\UI\UI Halo Project\images\mainlogo.png">
-  </div>
-  <video autoplay loop class="fillWidth">
-      <source src="WEBM/Ground-Zero.webm" type="video/webm" />Your browser does not support the video tag. I suggest you upgrade your browser.
-  </video>
-
-  <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="continue_with" +
-    data-show-faces="true" scope="public_profile,email,user_location,user_hometown,user_friends" +
-    onlogin="checkLoginState();" data-auto-logout-link="true" data-use-continue-as="true"></div>
-  <div id="status"></div>
-  <div id="geo-location"></div>
-</div>
 
 <script>
-  var user_location = document.getElementById("geo-location");
-  if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(showPosition);
-  } else {
-      user_location.innerHTML = "Geolocation is not supported by this browser.";
-  }
-  function showPosition(position) {
-      user_location.innerHTML = "Latitude: " + position.coords.latitude + "<br>Longitude: " + position.coords.longitude;
-  }
-</script>
+    var user_location = document.getElementById("geo-location");
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+        user_location.innerHTML = "Geolocation is not supported by this browser.";
+    }
+    var lat = document.getElementsByName("latitude");
+    var longi = document.getElementsByName("longitude");
+    function showPosition(position) {
+        user_location.innerHTML = "Latitude: " + position.coords.latitude + "<br>Longitude: " + position.coords.longitude;
+        
+        lat.value = position.coords.latitude;
+        console.log(lat)
+        longi.value = position.coords.longitude;
+        console.log(longi)
+        var uname = document.getElementsByName("u_name").value;
+        var oReq = new XMLHttpRequest();
+        var user_data = "UserName="+ uname +"&latitude="+lat.value+"&longitude="+longi.value
+        oReq.onreadystatechange = function() {
+          if(oReq.readyState == 4 && oReq.status == 200) {
+          console.log(oReq.responseText);
+          }
+        }  
+        oReq.open("POST", "http://localhost:8888/insertall");
+        oReq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        oReq.send(user_data);
+    }
+  </script>
 </body>
 </html>
