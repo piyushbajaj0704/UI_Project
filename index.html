@@ -16,29 +16,31 @@ Topic: UI Assignment 4 <!DOCTYPE html>
   <body>
     <div class="container">
       <div class="options-box">
-          <div class="filter_main_page">
-              <img class="logo" src="C:\Users\piyus\Documents\UI\UI Halo Project\images\logo_white.png">
-            </div>
-        <div class="profile_picture">
-            <img class="profile-pic" src="C:\Users\piyus\Documents\UI\UI Halo Project\images\img_avatar2.png" />
-            <div class="upload-button">Upload</div>        
-            <input class="file-upload" type="file" accept="image/*"/>
+        <div class="filter_main_page">
+          <img class="logo_in_main_page" src="C:\Users\piyus\Documents\UI\UI Halo Project\images\logo_white.png">
         </div>
-        <div>
-          <input id="show-listings" type="button" value="Show People">
-        <!--  <input id="hide-listings" type="button" value="Hide People"> -->
-          <hr>
-          <span class="text"> Draw shapes to search within it a defined region!</span>
-          <input id="drawing"  type="button" value="Draw" onclick="return change(this);">
+        <div class="profile_picture_div">
+          <img class="profile-pic" src="C:\Users\piyus\Documents\UI\UI Halo Project\images\img_avatar2.png" />
+          <div class="upload-button">Upload</div>        
+          <input class="photo-upload" type="file" accept="image/*"/>
         </div>
-        <hr>
+        <hr> 
         <div>
-          <input id="zoom-to-area-text" type="text" placeholder="Las Vegas">
+          <input id="zoom-to-area-text" type="text" placeholder="">
           <input id="zoom-to-area" type="button" value="Zoom">
         </div>
+        <div>
+          <input id="show-listings" type="button" value="Show People"> 
+          <input id="hide-listings" type="button" value="Hide People"> 
+          <hr>
+          <span class="text"> Draw shapes to search within it a region!</span>
+          <input id="drawing"  type="button" value="Draw" onclick="return change(this);">
+
+        </div>
+           
         <hr>
         <div>
-          <span class="text"> Within </span>
+          <span class="text"> </span>
           <select id="max-duration">
             <option value="10">10 min</option>
             <option value="15">15 min</option>
@@ -51,10 +53,9 @@ Topic: UI Assignment 4 <!DOCTYPE html>
             <option value="BICYCLING">bike</option>
             <option value="TRANSIT">transit ride</option>
           </select>
-          <span class="text">of</span>
-          <input id="search-within-time-text" type="text" placeholder="Enter the location ">
+          <!--<input id="search-within-time-text" type="text" placeholder="Enter the location "> -->
           <input id="search-within-time" type="button" value="Go">
-        </div>
+        </div> 
       </div>   
       <div id="map">       
       </div>

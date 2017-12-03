@@ -1,3 +1,4 @@
+
 // This is the main Javascript file where the all the magic happens
 // Author: Piyush Bajaj
 // Topic: UI Assignment 4 
@@ -267,11 +268,39 @@ function initMap() {
     drawingControlOptions: {
       position: google.maps.ControlPosition.TOP_LEFT,
       drawingModes: [
-        'circle', 'polygon', 'polyline', 'rectangle'
-        //google.maps.drawing.OverlayType.POLYGON
+        //'circle', 'polygon'
+        //'rectangle'
+        //google.maps.drawing.OverlayType.CIRCLE,
+        google.maps.drawing.OverlayType.POLYGON
       ]
-    }
+    },
+    /*circleOptions: {
+      //fillColor: '',
+      fillOpacity: 0.3,
+      strokeWeight: 5,
+      clickable: false,
+      editable: true,
+      zIndex: 1 
+  } */
   });
+  //Circle draw
+  //google.maps.event.addListener(drawingManager, 'circlecomplete', onCircleComplete);
+  /*
+  function onCircleComplete(shape) {
+    if (shape == null || (!(shape instanceof google.maps.Circle))) return;
+
+    if (circle != null) {
+        circle.setMap(null);
+        circle = null;
+    }
+
+    circle = shape;
+    console.log('radius', circle.getRadius());
+    console.log('lat', circle.getCenter().lat());
+    console.log('lng', circle.getCenter().lng());
+  }
+  */
+
   var defaultIcon = makeMarkerIcon('0091ff');
 
   var highlightedIcon = makeMarkerIcon('FFFF24');
@@ -288,7 +317,7 @@ function initMap() {
       position: position,
       title: title,
       animation: google.maps.Animation.DROP,
-      icon: defaultIcon,
+      icon: 'http://i68.tinypic.com/ayvwuw.png',  // Run a MongoDB query to fetch user image
       rating: stars,
       review: review,
       city: city,
@@ -354,8 +383,6 @@ function populateInfoWindow(marker, infowindow) {
             '<div class="left">' +
             '<div class="title">' + marker.title  + '</div>' +
             '<div class="city">' + marker.city  + '</div>' +
-            '<div class="rating">' + "Rating:" + marker.rating  + '</div>' +
-            '<div class="review">' + "Reviews:" + marker.review  + '</div>' + 
             '</div><div id="pano"></div>' + 
             '</div>');
           var panoramaOptions = {
@@ -390,15 +417,10 @@ function hideListings() {
     markers[i].setMap(null);
   }
 }
-
+// Run MongoDB query here to set the picture of the user
 function makeMarkerIcon(markerColor) {
   var markerImage = new google.maps.MarkerImage(
-    'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|'+ markerColor +
-    '|40|_|%E2%80%A2',
-    new google.maps.Size(21, 34),
-    new google.maps.Point(0, 0),
-    new google.maps.Point(10, 34),
-    new google.maps.Size(21,34));
+    'http://i68.tinypic.com/ayvwuw.png'); 
   return markerImage;
 }
 
@@ -419,6 +441,14 @@ function searchInsideDraw() {
     } else {
       markers[i].setMap(null);
     }
+    /*
+    if (google.maps.geometry.spherical.computeDistanceBetween(markers[i].position, 
+      markers[i].position +10.0 <= draw)) {
+      markers[i].setMap(map);
+    } else {
+      markers[i].setMap(null);
+    }
+    */
   }
 }
 
@@ -435,8 +465,7 @@ function zoomToArea() {
           map.setCenter(results[0].geometry.location);
           map.setZoom(12);
         } else {
-          window.alert('We could not find that location - try entering a more' +
-              ' specific place.');
+          window.alert('We could not find that location - try entering a more specific place.');
         }
       });
   }
@@ -444,17 +473,17 @@ function zoomToArea() {
 
 function searchWithinTime() {
   var distanceMatrixService = new google.maps.DistanceMatrixService;
-  var address = document.getElementById('search-within-time-text').value;
-  if (address == '') {
-    window.alert('You must enter an address.');
-  } else {
+  //var address = document.getElementById('search-within-time-text').value;
+  //if (address == '') {
+  //  window.alert('You must enter an address.');
+  //} else {
     hideListings();
-
     var origins = [];
     for (var i = 0; i < markers.length; i++) {
       origins[i] = markers[i].position;
     }
-    var destination = address;
+    // Fetch from MongoDB
+    var destination = {lat: 36.0, lng: -115.0};
     var mode = document.getElementById('mode').value;
 
     distanceMatrixService.getDistanceMatrix({
@@ -469,7 +498,35 @@ function searchWithinTime() {
         displayMarkersWithinTime(response);
       }
     });
-  }
+  //}
+}
+
+function displayDirections(origin) {
+  //directionsService.route(null);
+  //hideListings();
+  hideListings(markers);
+  var directionsService = new google.maps.DirectionsService;
+  //Fetch from MongoDB
+  var destinationAddress = {lat: 36.0, lng: -115.0};
+  var mode = document.getElementById('mode').value;
+  directionsService.route({
+    origin: origin,
+    destination: destinationAddress,
+    travelMode: google.maps.TravelMode[mode]
+  }, function(response, status) {
+    if (status === google.maps.DirectionsStatus.OK) {
+      var directionsDisplay = new google.maps.DirectionsRenderer({
+        map: map,
+        directions: response,
+        draggable: true,
+        polylineOptions: {
+          strokeColor: 'green'
+        }
+      });
+    } else {
+      window.alert('Directions request failed due to ' + status);
+    }
+  });
 }
 
 function displayMarkersWithinTime(response) {
@@ -492,9 +549,11 @@ function displayMarkersWithinTime(response) {
 
           markers[i].setMap(map);
           atLeastOne = true;
-
+          // Change code - Dont make a new window
           var infowindow = new google.maps.InfoWindow({
-            content: durationText + ' away, ' + distanceText
+            content: durationText + ' away, ' + distanceText +
+              '<div><input type=\"button\" value=\"View Route\" onclick =' +
+              '\"displayDirections(&quot;' + origins[i] + '&quot;);\"></input></div>'
           });
           infowindow.open(map, markers[i]);
 
@@ -508,41 +567,12 @@ function displayMarkersWithinTime(response) {
   }
 }
 
+
+
 function getPoints() {
   return [
     new google.maps.LatLng(40.2904976, -80.1100212),
     new google.maps.LatLng(33.3245392, -111.7204486),
-    new google.maps.LatLng(36.1590984,  -115.3379148),
-    new google.maps.LatLng(36.115465, -115.226764),
-    new google.maps.LatLng(36.206763, -115.3007233),
-    new google.maps.LatLng(36.1962026, -115.1167987),
-    new google.maps.LatLng(36.1962026,  -115.1167987),
-    new google.maps.LatLng(336.1125192, -115.2426053),
-    new google.maps.LatLng(36.0121912, -115.1739932),
-    new google.maps.LatLng(36.0165803, -115.1187014),
-    new google.maps.LatLng(36.0559407, -115.2680339),
-    new google.maps.LatLng(36.1510984, -115.1598044),
-    new google.maps.LatLng(36.2794672, -115.2080128),
-    new google.maps.LatLng(36.2707001, -115.263),
-    new google.maps.LatLng(36.1611321711, -115.331700319),
-    new google.maps.LatLng(36.099494, -115.2083645),
-    new google.maps.LatLng(36.0612353, -115.2896852),
-    new google.maps.LatLng(36.2603405, -115.1171278),
-    new google.maps.LatLng(36.2603405, -115.1171280),
-    new google.maps.LatLng(36.0280675, -115.1189137),
-    new google.maps.LatLng(36.2186971729, -115.313933321,),
-    new google.maps.LatLng(36.1248767264, -115.169034004),
-    new google.maps.LatLng(36.108713, -115.173192),
-    new google.maps.LatLng( 36.1314439, -115.1648858,),
-    new google.maps.LatLng(36.055627, -115.2804128,),
-    new google.maps.LatLng(36.2186522367, -115.125405192),
-    new google.maps.LatLng(36.1278425, -115.225183),
-    new google.maps.LatLng(33.4080579, -111.9469356),
-    new google.maps.LatLng(33.425763, -111.939614),
-    new google.maps.LatLng(33.3916359331, -111.909659764),
-    new google.maps.LatLng(33.3714095, -111.9392497,),
-    new google.maps.LatLng(33.3334387, -111.9477553),
-    new google.maps.LatLng(33.348750911, -111.944757559)
   ];
 }
 
@@ -555,17 +585,17 @@ $(document).ready(function() {
   
               reader.onload = function (e) {
                   $('.profile-pic').attr('src', e.target.result);
+                  console.log("this" + e.target.result);
               }
       
               reader.readAsDataURL(input.files[0]);
           }
       }
-
-      $(".file-upload").on('change', function(){
+      $(".photo-upload").on('change', function(){
           readURL(this);
       });
       
       $(".upload-button").on('click', function() {
-         $(".file-upload").click();
+         $(".photo-upload").click();
       });
   });
